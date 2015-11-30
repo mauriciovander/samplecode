@@ -75,7 +75,26 @@ class UrlParser
      */
     public function getPath()
     {
-        return $this->getComponent('path');
+        $path = $this->getComponent('path');
+        return $this->normalizePath($path);
+
+    }
+
+    /**
+     * If the input URL has a path with '.' or '..' in it, those would be removed.
+     * @param mixed $path
+     * @return string | boolean
+     */
+    private function normalizePath($path)
+    {
+        $path_parts = explode('/', $path);
+        $fixed_path = array();
+        foreach ($path_parts as $part) {
+            if (!in_array($part, array('.','..'))) {
+                $fixed_path[] = $part;
+            }
+        }
+        return $path ? implode('/', $fixed_path) : $path ;
     }
 
     /**
@@ -100,15 +119,15 @@ class UrlParser
      */
     private function unparseUrl()
     {
-        $scheme   = isset($this->parsed_url['scheme']) ? $this->parsed_url['scheme'] . '://' : '';
-        $user     = isset($this->parsed_url['user']) ? $this->parsed_url['user'] : '';
-        $pass     = isset($this->parsed_url['pass']) ? ':' . $this->parsed_url['pass']  : '';
+        $scheme   = $this->getScheme() ? $this->getScheme() . '://' : '';
+        $user     = $this->getUser() ? $this->getUser(): '';
+        $pass     = $this->getPass() ? ':' . $this->getPass()  : '';
         $pass     = ($user || $pass) ? "$pass@" : '';
-        $host     = isset($this->parsed_url['host']) ? $this->parsed_url['host'] : '';
-        $port     = isset($this->parsed_url['port']) ? ':' . $this->parsed_url['port'] : '';
-        $path     = isset($this->parsed_url['path']) ? $this->parsed_url['path'] : '';
-        $query    = isset($this->parsed_url['query']) ? '?' . $this->parsed_url['query'] : '';
-        $fragment = isset($this->parsed_url['fragment']) ? '#' . $this->parsed_url['fragment'] : '';
+        $host     = $this->getHost() ? $this->getHost(): '';
+        $port     = $this->getPort() ? ':' . $this->getPort() : '';
+        $path     = $this->getPath() ? $this->getPath() : '';
+        $query    = $this->getQuery() ? '?' . $this->getQuery() : '';
+        $fragment = $this->getFragment() ? '#' . $this->getFragment() : '';
         return $scheme . $user . $pass . $host . $port . $path . $query . $fragment;
     }
 
@@ -129,4 +148,3 @@ class UrlParser
     }
 }
 
-//An added bonus could be if the class would normalize the path of the URL on instantiation, so if the input URL has a path with '.' or '..' in it, those would be removed.
