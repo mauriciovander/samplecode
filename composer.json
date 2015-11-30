@@ -1,0 +1,21 @@
+{
+    "name": "mauriciovander/samplecode",
+    "description": "PHP Sample Code",
+    "require": {
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    },
+    "authors": [
+        {
+            "name": "Mauricio van der Maesen de Sombreff",
+            "email": "mauriciovander@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "SampleCode\\": "src/",
+            "Tests\\": "tests"
+        }
+    }
+}
